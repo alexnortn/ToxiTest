@@ -114,8 +114,14 @@ function draw() {
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
-  // Call setup to reinstantiate the window on resize
-  setup();
+  physics.clear();
+  // Empty the Physics Sim
+  physEmpty();
+  findCenter();
+  // Reload the Arrays
+  loadArrays(vertices);
+  // Initiate the physics array
+  physInit();
   console.log("Window Resized!");
 }
 
@@ -175,6 +181,10 @@ function drawBasicA(){
 
 // Setup the dynamic arrays --> center them on the page
 function loadArrays(vertices) {
+  if (aVerts.length > 0 && aCounterVerts.length > 0) {
+    aVerts.length = 0;
+    aCounterVerts.length = 0;
+  }
   for(var i in vertices.a_vertex) {
 	aVerts.push(createVector(vertices.a_vertex[i].x, vertices.a_vertex[i].y));
     aVerts[i].x += center.x*.85;
@@ -211,16 +221,17 @@ function displayPhys() {
 function physInit() {
     var springStrength = 0.0005,
         springLength   = 0.05;
-    // Make our ToxiParticles for 'a'
-    for(var i in aVerts) {
-        aLockVert.push(new Particle(new Vec2D(aVerts[i].x, aVerts[i].y)));
-            aLockVert[i].lock();
-        aSpringVert.push(new Particle(new Vec2D(aVerts[i].x, aVerts[i].y)));
-        aSpringArr.push(new VerletSpring2D(aLockVert[i], aSpringVert[i],springLength, springStrength));
-            physics.addParticle(aLockVert[i]);
-            physics.addParticle(aSpringVert[i]);
-            physics.addSpring(aSpringArr[i]);
-        // console.log(aSpringVert[i]);
+
+      // Make our ToxiParticles for 'a'
+      for(var i in aVerts) {
+          aLockVert.push(new Particle(new Vec2D(aVerts[i].x, aVerts[i].y)));
+              aLockVert[i].lock();
+          aSpringVert.push(new Particle(new Vec2D(aVerts[i].x, aVerts[i].y)));
+          aSpringArr.push(new VerletSpring2D(aLockVert[i], aSpringVert[i],springLength, springStrength));
+              physics.addParticle(aLockVert[i]);
+              physics.addParticle(aSpringVert[i]);
+              physics.addSpring(aSpringArr[i]);
+          // console.log(aSpringVert[i]);
     }
 
     // Make our ToxiParticles for 'a counter'
@@ -233,6 +244,22 @@ function physInit() {
             physics.addParticle(aCounterSpringVert[i]);
             physics.addSpring(aCounterSpringArr[i]);
     }
+}
+
+function physEmpty() {
+  if (aSpringArr.length == aVerts.length) {
+    for(var i in aSpringArr) physics.removeSpringElements(aSpringArr[i]);
+  }
+  if (aCounterSpringArr.length == aCounterVerts.length) {
+    for(var i in aCounterSpringArr) physics.removeSpringElements(aCounterSpringArr[i]);
+  }
+}
+
+function findCenter() {
+  w = windowWidth;
+  h = windowHeight;
+  center.set(w/2, h/2);
+  console.log(center);
 }
 
 
