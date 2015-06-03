@@ -219,7 +219,7 @@ function displayPhys() {
 }
 
 function physInit() {
-    var springStrength = 0.0005,
+    var springStrength = 0.00025,
         springLength   = 0.05;
 
       // Make our ToxiParticles for 'a'
