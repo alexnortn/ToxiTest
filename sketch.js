@@ -23,7 +23,7 @@ var vertices;
 var nudgeAttractor; 
 
 function preload() {
-  vertices = loadJSON("../data/a.json");
+  vertices = loadJSON("data/a.json");
 }
 
 function setup() {
