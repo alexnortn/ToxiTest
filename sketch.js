@@ -1,7 +1,6 @@
 // Alex Norton
 // a^N 
 // http://alexnortn.com
-// second effort
 
 // Reference to physics world
 var physics;
