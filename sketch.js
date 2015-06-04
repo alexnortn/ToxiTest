@@ -11,19 +11,24 @@ var aLockVert = [],
     aCounterLockVert = [],
     aCounterSpringVert = [],
     aCounterSpringArr = [],
+    nLockVert = [],
+    nSpringVert = [],
+    nSpringArr = [],
     w,h,
     center,
     glyphCenter,
+    nOffset,
     aCenterOffset,
     aVerts = [],
     aCounterVerts = [];
+    nVerts = [];
 
 // This will be our JSON object for the phys sim
 var vertices;
 var nudgeAttractor; 
 
 function preload() {
-  vertices = loadJSON("data/a.json");
+  vertices = loadJSON("data/verts.json");
 }
 
 function setup() {
@@ -71,6 +76,7 @@ function draw() {
 
   // Draw the bezier Shapes 
   drawBasicA();
+  // drawBasicN();
 
   // Move the second one according to the mouse
   if (mouseIsPressed) {
@@ -87,6 +93,13 @@ function draw() {
     //     aCounterSpringVert[i].x = mouseX;
     //     aCounterSpringVert[i].y = mouseY;
     //     aCounterSpringVert[i].unlock();
+    // }
+
+    // for(var i in nVerts) {
+    //     nSpringVert[i].lock();
+    //     nSpringVert[i].x = mouseX;
+    //     nSpringVert[i].y = mouseY;
+    //     nSpringVert[i].unlock();
     // }
 
     // Display the Physiscs Particles;
@@ -127,6 +140,7 @@ function drawBezier(vertices) {
 
 function drawBasicA(){
   noStroke();
+  fill(128);
   beginShape();
   vertex(aSpringVert[0].x, aSpringVert[0].y);
   vertex(aSpringVert[1].x, aSpringVert[1].y);
@@ -161,6 +175,24 @@ function drawBasicA(){
   endShape(CLOSE);
 }
 
+function drawBasicN(){
+  noStroke();
+  fill(128);
+  beginShape();
+    vertex(nSpringVert[0].x, nSpringVert[0].y);
+    vertex(nSpringVert[1].x, nSpringVert[1].y);
+    vertex(nSpringVert[2].x, nSpringVert[2].y);
+    vertex(nSpringVert[3].x, nSpringVert[3].y);
+    vertex(nSpringVert[4].x, nSpringVert[4].y);
+    vertex(nSpringVert[5].x, nSpringVert[5].y);
+    vertex(nSpringVert[6].x, nSpringVert[6].y);
+    vertex(nSpringVert[7].x, nSpringVert[7].y);
+    vertex(nSpringVert[8].x, nSpringVert[8].y);
+    vertex(nSpringVert[9].x, nSpringVert[9].y);
+  endShape(CLOSE);
+}
+
+
 // Setup the dynamic arrays --> center them on the page
 function loadArrays(vertices) {
   // Always set the arrays to zero, in order to center properly
@@ -177,6 +209,12 @@ function loadArrays(vertices) {
   aCounterVerts.push(createVector(vertices.counter_vertex[j].x, vertices.counter_vertex[j].y));
     aCounterVerts[j].x += (glyphCenter.x);
     aCounterVerts[j].y += (glyphCenter.y);
+  // console.log(aCounterVerts[j].x + " , " + aCounterVerts[j].y);
+  }
+  for(var k in vertices.n_vertex) {
+  nVerts.push(createVector(vertices.n_vertex[k].x, vertices.n_vertex[k].y));
+    // nVerts[k].x -= (nVerts[k].x - center.x);
+    // nVerts[k].y -= (nVerts[k].y - center.y);
   // console.log(aCounterVerts[j].x + " , " + aCounterVerts[j].y);
   }
 }
@@ -197,6 +235,14 @@ function displayPhys() {
         line(aCounterLockVert[i].x,aCounterLockVert[i].y,aCounterSpringVert[i].x,aCounterSpringVert[i].y);
         aCounterLockVert[i].display();
         aCounterSpringVert[i].display();
+    }
+    // Display and draw line between the 'N' vertices
+    for(var i in nVerts) {
+        stroke(255,0,0);
+        strokeWeight(0.5);
+        line(nLockVert[i].x,nLockVert[i].y,nSpringVert[i].x,nSpringVert[i].y);
+        nLockVert[i].display();
+        nSpringVert[i].display();
     }
 }
 
@@ -226,6 +272,17 @@ function physInit() {
             physics.addParticle(aCounterSpringVert[i]);
             physics.addSpring(aCounterSpringArr[i]);
     }
+
+    // Make our ToxiParticles for 'N'
+    for(var i in nVerts) {
+        nLockVert.push(new Particle(new Vec2D(nVerts[i].x, nVerts[i].y)));
+            nLockVert[i].lock();
+        nSpringVert.push(new Particle(new Vec2D(nVerts[i].x, nVerts[i].y)));
+        nSpringArr.push(new VerletSpring2D(nLockVert[i], nSpringVert[i],springLength, springStrength));
+            physics.addParticle(nLockVert[i]);
+            physics.addParticle(nSpringVert[i]);
+            physics.addSpring(nSpringArr[i]);
+    }
 }
 
 function physEmpty() {
@@ -244,6 +301,15 @@ function physEmpty() {
     aCounterSpringArr.length  = 0;
     aCounterLockVert.length   = 0;
     aCounterSpringVert.length = 0;
+  }
+
+  if (nSpringArr.length == nVerts.length) {
+    for(var i in nSpringArr) {
+      physics.removeSpringElements(nSpringArr[i]);
+    }
+    nSpringArr.length  = 0;
+    nLockVert.length   = 0;
+    nSpringVert.length = 0;
   }
 }
 
