@@ -23,7 +23,7 @@ var vertices;
 var nudgeAttractor; 
 
 function preload() {
-  vertices = loadJSON("../data/a.json");
+  vertices = loadJSON("data/a.json");
 }
 
 function setup() {
@@ -269,7 +269,7 @@ function centerA(vertices) {
   var yMax = arrayMax(yArray);
 
   var xCenter = (xMax - xMin) / 2;
-  var yCenter = ((yMax - yMin) / 2) -75;
+  var yCenter = ((yMax - yMin) / 2) - 75;
 
   aCenterOffset.set(xCenter, yCenter);
   console.log(aCenterOffset);
