@@ -237,13 +237,13 @@ function displayPhys() {
         aCounterSpringVert[i].display();
     }
     // Display and draw line between the 'N' vertices
-    for(var i in nVerts) {
-        stroke(255,0,0);
-        strokeWeight(0.5);
-        line(nLockVert[i].x,nLockVert[i].y,nSpringVert[i].x,nSpringVert[i].y);
-        nLockVert[i].display();
-        nSpringVert[i].display();
-    }
+    // for(var i in nVerts) {
+    //     stroke(255,0,0);
+    //     strokeWeight(0.5);
+    //     line(nLockVert[i].x,nLockVert[i].y,nSpringVert[i].x,nSpringVert[i].y);
+    //     nLockVert[i].display();
+    //     nSpringVert[i].display();
+    // }
 }
 
 function physInit() {
