@@ -37,7 +37,7 @@ function setup() {
   canvas = createCanvas(window.innerWidth, window.innerHeight);
   w = windowWidth;
   h = windowHeight;
-  scaleFactor = 1;
+  scaleFunc(windowWidth,windowHeight);
 
   // Centering functions
   center = createVector(w/2, h/2);
@@ -112,8 +112,8 @@ function draw() {
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
+  scaleFunc(windowWidth,windowHeight);
   // Empty the Physics Sim
-  scaleFactor = 1;
   physEmpty();
   findCenter();
   // Reload the Arrays
@@ -350,6 +350,8 @@ function centerA(vertices) {
 
 }
 
+//  Calculation Min/Max of any array
+
 function arrayMin(arr) {
   return arr.reduce(function (p, v) {
     return ( p < v ? p : v );
@@ -362,3 +364,17 @@ function arrayMax(arr) {
   });
 }
 
+// Scaling function
+
+function scaleFunc(w,h) {
+  if (h >= 1200) {
+      scaleFactor = 1.25;
+  } else if (h >= 800) {
+      scaleFactor = 1;
+  } else if (h >= 600) {
+      scaleFactor = 0.75;
+  } else {
+      scaleFactor = 0.5;
+  }
+  console.log(scaleFactor);
+}
