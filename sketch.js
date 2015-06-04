@@ -15,6 +15,7 @@ var aLockVert = [],
     nSpringVert = [],
     nSpringArr = [],
     w,h,
+    scaleFactor,
     center,
     glyphCenter,
     nOffset,
@@ -36,6 +37,7 @@ function setup() {
   canvas = createCanvas(window.innerWidth, window.innerHeight);
   w = windowWidth;
   h = windowHeight;
+  scaleFactor = 1;
 
   // Centering functions
   center = createVector(w/2, h/2);
@@ -111,6 +113,7 @@ function draw() {
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
   // Empty the Physics Sim
+  scaleFactor = 1;
   physEmpty();
   findCenter();
   // Reload the Arrays
@@ -201,13 +204,17 @@ function loadArrays(vertices) {
   console.log("Arrays at Zero");
   for(var i in vertices.a_vertex) {
   aVerts.push(createVector(vertices.a_vertex[i].x, vertices.a_vertex[i].y));
+    aVerts[i].x *= scaleFactor;
     aVerts[i].x += (glyphCenter.x);
+    aVerts[i].y *= scaleFactor;
     aVerts[i].y += (glyphCenter.y);
   // console.log(aVerts[i].x + " , " + aVerts[i].y);
   }
   for(var j in vertices.counter_vertex) {
   aCounterVerts.push(createVector(vertices.counter_vertex[j].x, vertices.counter_vertex[j].y));
+    aCounterVerts[j].x *= scaleFactor;
     aCounterVerts[j].x += (glyphCenter.x);
+    aCounterVerts[j].y *= scaleFactor;
     aCounterVerts[j].y += (glyphCenter.y);
   // console.log(aCounterVerts[j].x + " , " + aCounterVerts[j].y);
   }
