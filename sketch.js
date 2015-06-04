@@ -252,7 +252,7 @@ function findCenter() {
   h = windowHeight;
   center.set(w/2, h/2);
   var glyphCenterX = center.x - aCenterOffset.x; 
-  var glyphCenterY = center.y; 
+  var glyphCenterY = center.y + aCenterOffset.y; 
   glyphCenter.set(glyphCenterX, glyphCenterY);
 }
 
@@ -269,7 +269,7 @@ function centerA(vertices) {
   var yMax = arrayMax(yArray);
 
   var xCenter = (xMax - xMin) / 2;
-  var yCenter = ((yMax - yMin) / 2);
+  var yCenter = ((yMax - yMin) / 2) - 75;
 
   aCenterOffset.set(xCenter, yCenter);
   console.log(aCenterOffset);
