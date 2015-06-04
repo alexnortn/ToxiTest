@@ -5,9 +5,7 @@
 // Reference to physics world
 var physics;
 
-var p1,
-    p2,
-    aLockVert = [],
+var aLockVert = [],
     aSpringVert = [],
     aSpringArr = [],
     aCounterLockVert = [],
@@ -50,20 +48,6 @@ function setup() {
   // Make our Node Object
   nudgeAttractor = new Nudge(new Vec2D(width/2,height/2),24,width,0.1);
 
-  // Make two particles
-  p1 = new Particle(new Vec2D(width/2,height/3));
-  p2 = new Particle(new Vec2D(width/2+160,20));
-  // Lock one in place
-  p1.lock();
-
-  // Make a spring connecting both Particles
-  var spring =new VerletSpring2D(p1,p2,160,0.0005);
-
-  // Anything we make, we have to add into the physics world
-  physics.addParticle(p1);
-  physics.addParticle(p2);
-  physics.addSpring(spring);
-
 }
 
 function draw() {
@@ -79,15 +63,6 @@ function draw() {
 
   // Draw the bezier Shapes 
   drawBasicA();
-
-  // Draw a line between the particles
-  stroke(200);
-  strokeWeight(2);
-  // line(p1.x,p1.y,p2.x,p2.y);
-
-  // Display the particles
-  // p1.display();
-  // p2.display();
 
   // Move the second one according to the mouse
   if (mouseIsPressed) {
@@ -114,7 +89,6 @@ function draw() {
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
-  physics.clear();
   // Empty the Physics Sim
   physEmpty();
   findCenter();
@@ -122,7 +96,7 @@ function windowResized() {
   loadArrays(vertices);
   // Initiate the physics array
   physInit();
-  console.log("Window Resized!");
+  // console.log("Window Resized!");
 }
 
 function drawBezier(vertices) {
@@ -181,10 +155,10 @@ function drawBasicA(){
 
 // Setup the dynamic arrays --> center them on the page
 function loadArrays(vertices) {
-  if (aVerts.length > 0 && aCounterVerts.length > 0) {
-    aVerts.length = 0;
-    aCounterVerts.length = 0;
-  }
+  // Always set the arrays to zero, in order to center properly
+  aVerts.length = 0;
+  aCounterVerts.length = 0;
+  console.log("Arrays at Zero");
   for(var i in vertices.a_vertex) {
   aVerts.push(createVector(vertices.a_vertex[i].x, vertices.a_vertex[i].y));
     aVerts[i].x += center.x*.85;
@@ -248,10 +222,20 @@ function physInit() {
 
 function physEmpty() {
   if (aSpringArr.length == aVerts.length) {
-    for(var i in aSpringArr) physics.removeSpringElements(aSpringArr[i]);
+    for(var i in aSpringArr) {
+      physics.removeSpringElements(aSpringArr[i]);
+    } 
+    aSpringArr.length  = 0;
+    aLockVert.length   = 0;
+    aSpringVert.length = 0;
   }
   if (aCounterSpringArr.length == aCounterVerts.length) {
-    for(var i in aCounterSpringArr) physics.removeSpringElements(aCounterSpringArr[i]);
+    for(var i in aCounterSpringArr) {
+      physics.removeSpringElements(aCounterSpringArr[i]);
+    }
+    aCounterSpringArr.length  = 0;
+    aCounterLockVert.length   = 0;
+    aCounterSpringVert.length = 0;
   }
 }
 
@@ -259,7 +243,7 @@ function findCenter() {
   w = windowWidth;
   h = windowHeight;
   center.set(w/2, h/2);
-  console.log(center);
+  return this.center;
 }
 
 
