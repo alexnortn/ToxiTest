@@ -21,7 +21,7 @@ var vertices;
 var nudgeAttractor; 
 
 function preload() {
-  vertices = loadJSON("data/a.json");
+  vertices = loadJSON("../data/a.json");
 }
 
 function setup() {
@@ -89,10 +89,6 @@ function draw() {
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
-<<<<<<< HEAD
-=======
-  physics.clear();
->>>>>>> fixed the wacky resize issue, still need to center
   // Empty the Physics Sim
   physEmpty();
   findCenter();
@@ -100,11 +96,7 @@ function windowResized() {
   loadArrays(vertices);
   // Initiate the physics array
   physInit();
-<<<<<<< HEAD
   // console.log("Window Resized!");
-=======
-  console.log("Window Resized!");
->>>>>>> fixed the wacky resize issue, still need to center
 }
 
 function drawBezier(vertices) {
@@ -163,17 +155,10 @@ function drawBasicA(){
 
 // Setup the dynamic arrays --> center them on the page
 function loadArrays(vertices) {
-<<<<<<< HEAD
   // Always set the arrays to zero, in order to center properly
   aVerts.length = 0;
   aCounterVerts.length = 0;
   console.log("Arrays at Zero");
-=======
-  if (aVerts.length > 0 && aCounterVerts.length > 0) {
-    aVerts.length = 0;
-    aCounterVerts.length = 0;
-  }
->>>>>>> fixed the wacky resize issue, still need to center
   for(var i in vertices.a_vertex) {
   aVerts.push(createVector(vertices.a_vertex[i].x, vertices.a_vertex[i].y));
     aVerts[i].x += center.x*.85;
@@ -237,7 +222,6 @@ function physInit() {
 
 function physEmpty() {
   if (aSpringArr.length == aVerts.length) {
-<<<<<<< HEAD
     for(var i in aSpringArr) {
       physics.removeSpringElements(aSpringArr[i]);
     } 
@@ -252,12 +236,6 @@ function physEmpty() {
     aCounterSpringArr.length  = 0;
     aCounterLockVert.length   = 0;
     aCounterSpringVert.length = 0;
-=======
-    for(var i in aSpringArr) physics.removeSpringElements(aSpringArr[i]);
-  }
-  if (aCounterSpringArr.length == aCounterVerts.length) {
-    for(var i in aCounterSpringArr) physics.removeSpringElements(aCounterSpringArr[i]);
->>>>>>> fixed the wacky resize issue, still need to center
   }
 }
 
@@ -265,11 +243,7 @@ function findCenter() {
   w = windowWidth;
   h = windowHeight;
   center.set(w/2, h/2);
-<<<<<<< HEAD
   return this.center;
-=======
-  console.log(center);
->>>>>>> fixed the wacky resize issue, still need to center
 }
 
 
