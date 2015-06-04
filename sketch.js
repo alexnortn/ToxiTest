@@ -13,6 +13,8 @@ var aLockVert = [],
     aCounterSpringArr = [],
     w,h,
     center,
+    glyphCenter,
+    aCenterOffset,
     aVerts = [],
     aCounterVerts = [];
 
@@ -21,7 +23,7 @@ var vertices;
 var nudgeAttractor; 
 
 function preload() {
-  vertices = loadJSON("../data/a.json");
+  vertices = loadJSON("data/a.json");
 }
 
 function setup() {
@@ -29,7 +31,13 @@ function setup() {
   canvas = createCanvas(window.innerWidth, window.innerHeight);
   w = windowWidth;
   h = windowHeight;
+
+  // Centering functions
   center = createVector(w/2, h/2);
+  glyphCenter = createVector();
+  aCenterOffset = createVector();
+  centerA(vertices);
+  findCenter();
 
   // Load the arrays
   loadArrays(vertices);
@@ -161,14 +169,14 @@ function loadArrays(vertices) {
   console.log("Arrays at Zero");
   for(var i in vertices.a_vertex) {
   aVerts.push(createVector(vertices.a_vertex[i].x, vertices.a_vertex[i].y));
-    aVerts[i].x += center.x*.85;
-    aVerts[i].y += center.y;
+    aVerts[i].x += (glyphCenter.x);
+    aVerts[i].y += (glyphCenter.y);
   // console.log(aVerts[i].x + " , " + aVerts[i].y);
   }
   for(var j in vertices.counter_vertex) {
   aCounterVerts.push(createVector(vertices.counter_vertex[j].x, vertices.counter_vertex[j].y));
-    aCounterVerts[j].x += center.x*.85;
-    aCounterVerts[j].y += center.y;
+    aCounterVerts[j].x += (glyphCenter.x);
+    aCounterVerts[j].y += (glyphCenter.y);
   // console.log(aCounterVerts[j].x + " , " + aCounterVerts[j].y);
   }
 }
@@ -243,7 +251,41 @@ function findCenter() {
   w = windowWidth;
   h = windowHeight;
   center.set(w/2, h/2);
-  return this.center;
+  var glyphCenterX = center.x - aCenterOffset.x; 
+  var glyphCenterY = center.y; 
+  glyphCenter.set(glyphCenterX, glyphCenterY);
 }
 
+function centerA(vertices) {
+  var xArray = [];
+  var yArray = [];
+
+  for (var i in vertices.a_vertex) xArray.push(vertices.a_vertex[i].x);
+  for (var i in vertices.a_vertex) yArray.push(vertices.a_vertex[i].y);
+
+  var xMin = arrayMin(xArray);
+  var yMin = arrayMin(yArray);
+  var xMax = arrayMax(xArray);
+  var yMax = arrayMax(yArray);
+
+  var xCenter = (xMax - xMin) / 2;
+  var yCenter = ((yMax - yMin) / 2);
+
+  aCenterOffset.set(xCenter, yCenter);
+  console.log(aCenterOffset);
+  return aCenterOffset;
+
+}
+
+function arrayMin(arr) {
+  return arr.reduce(function (p, v) {
+    return ( p < v ? p : v );
+  });
+}
+
+function arrayMax(arr) {
+  return arr.reduce(function (p, v) {
+    return ( p > v ? p : v );
+  });
+}
 
