@@ -12,7 +12,7 @@ function Particle(position) {
     // stroke(200);
     // strokeWeight(2);
     noStroke();
-    ellipse(this.x,this.y,1,1);
+    // ellipse(this.x,this.y,1,1);
   }
 }
 
