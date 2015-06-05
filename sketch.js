@@ -15,6 +15,8 @@ var aLockVert = [],
     nSpringVert = [],
     nSpringArr = [],
     w,h,
+    gravity,
+    gravityStrength,
     mousePos,
     scaleFactor,
     center,
@@ -54,7 +56,9 @@ function setup() {
   // Initialize the physics
   physics=new VerletPhysics2D();
   physics.setDrag (0.01);
-  physics.addBehavior(new GravityBehavior(new Vec2D(0,0.5)));
+  gravityStrength = new Vec2D(0,0.5);
+  gravity = new GravityBehavior(gravityStrength);
+  physics.addBehavior(gravity);
 
   // Set the world's bounding box
   physics.setWorldBounds(new Rect(0,0,width,height));
@@ -219,44 +223,51 @@ function loadArrays(vertices) {
     aCounterVerts[j].y += (glyphCenter.y);
   // console.log(aCounterVerts[j].x + " , " + aCounterVerts[j].y);
   }
-  for(var k in vertices.n_vertex) {
-  nVerts.push(createVector(vertices.n_vertex[k].x, vertices.n_vertex[k].y));
-    // nVerts[k].x -= (nVerts[k].x - center.x);
-    // nVerts[k].y -= (nVerts[k].y - center.y);
-  // console.log(aCounterVerts[j].x + " , " + aCounterVerts[j].y);
-  }
+  // for(var k in vertices.n_vertex) {
+  // nVerts.push(createVector(vertices.n_vertex[k].x, vertices.n_vertex[k].y));
+  //   nVerts[k].x *= scaleFactor;
+  //   // nVerts[k].x += (glyphCenter.x);
+  //   nVerts[k].y *= scaleFactor;
+  //   // nVerts[k].y += (glyphCenter.y);
+  // // console.log(aCounterVerts[j].x + " , " + aCounterVerts[j].y);
+  // }
 }
 
 function displayPhys() {
     for(var i in aVerts) {
-        strokeWeight(0.5);
+        strokeWeight(scaleFactor);
         var aVertPos = createVector(aLockVert[i].x, aLockVert[i].y);
         var trans = map(aVertPos.dist(mousePos), 0, center.x/2, 100, 0);
         var strokeCol = color(255,0,0,trans);
         fill(strokeCol);
         stroke(strokeCol);
-        ellipse(aLockVert[i].x,aLockVert[i].y,1,1);
+        ellipse(aLockVert[i].x,aLockVert[i].y,scaleFactor,scaleFactor);
         line(aLockVert[i].x,aLockVert[i].y,aSpringVert[i].x,aSpringVert[i].y);
         aLockVert[i].display();
         aSpringVert[i].display();
     }
     // Display and draw line between the 'a counter' vertices
     for(var i in aCounterVerts) {
-        strokeWeight(0.5);
+        strokeWeight(scaleFactor);
         var aVertPos = createVector(aCounterLockVert[i].x, aCounterLockVert[i].y);
         var trans = map(aVertPos.dist(mousePos), 0, center.x/2, 100, 0);
         var strokeCol = color(255,0,0,trans);
         stroke(strokeCol);
         fill(strokeCol);
-        ellipse(aCounterLockVert[i].x,aCounterLockVert[i].y,1,1);
+        ellipse(aCounterLockVert[i].x,aCounterLockVert[i].y,scaleFactor,scaleFactor);
         line(aCounterLockVert[i].x,aCounterLockVert[i].y,aCounterSpringVert[i].x,aCounterSpringVert[i].y);
         aCounterLockVert[i].display();
         aCounterSpringVert[i].display();
     }
     // Display and draw line between the 'N' vertices
     // for(var i in nVerts) {
-    //     stroke(255,0,0);
-    //     strokeWeight(0.5);
+    //     strokeWeight(scaleFactor);
+    //     var aVertPos = createVector(nLockVert[i].x, nLockVert[i].y);
+    //     var trans = map(aVertPos.dist(mousePos), 0, center.x/2, 100, 0);
+    //     var strokeCol = color(255,0,0,trans);
+    //     stroke(strokeCol);
+    //     fill(strokeCol);
+    //     ellipse(nLockVert[i].x,nLockVert[i].y,scaleFactor,scaleFactor);
     //     line(nLockVert[i].x,nLockVert[i].y,nSpringVert[i].x,nSpringVert[i].y);
     //     nLockVert[i].display();
     //     nSpringVert[i].display();
@@ -291,15 +302,15 @@ function physInit() {
     }
 
     // Make our ToxiParticles for 'N'
-    for(var i in nVerts) {
-        nLockVert.push(new Particle(new Vec2D(nVerts[i].x, nVerts[i].y)));
-            nLockVert[i].lock();
-        nSpringVert.push(new Particle(new Vec2D(nVerts[i].x, nVerts[i].y)));
-        nSpringArr.push(new VerletSpring2D(nLockVert[i], nSpringVert[i],springLength, springStrength));
-            physics.addParticle(nLockVert[i]);
-            physics.addParticle(nSpringVert[i]);
-            physics.addSpring(nSpringArr[i]);
-    }
+    // for(var i in nVerts) {
+    //     nLockVert.push(new Particle(new Vec2D(nVerts[i].x, nVerts[i].y)));
+    //         nLockVert[i].lock();
+    //     nSpringVert.push(new Particle(new Vec2D(nVerts[i].x, nVerts[i].y)));
+    //     nSpringArr.push(new VerletSpring2D(nLockVert[i], nSpringVert[i],springLength, springStrength));
+    //         physics.addParticle(nLockVert[i]);
+    //         physics.addParticle(nSpringVert[i]);
+    //         physics.addSpring(nSpringArr[i]);
+    // }
 }
 
 function physEmpty() {
@@ -320,14 +331,14 @@ function physEmpty() {
     aCounterSpringVert.length = 0;
   }
 
-  if (nSpringArr.length == nVerts.length) {
-    for(var i in nSpringArr) {
-      physics.removeSpringElements(nSpringArr[i]);
-    }
-    nSpringArr.length  = 0;
-    nLockVert.length   = 0;
-    nSpringVert.length = 0;
-  }
+  // if (nSpringArr.length == nVerts.length) {
+  //   for(var i in nSpringArr) {
+  //     physics.removeSpringElements(nSpringArr[i]);
+  //   }
+  //   nSpringArr.length  = 0;
+  //   nLockVert.length   = 0;
+  //   nSpringVert.length = 0;
+  // }
 }
 
 function findCenter() {
@@ -378,4 +389,14 @@ function arrayMax(arr) {
 function scaleFunc(w,h) {
   scaleFactor = w / 1600;
   console.log(scaleFactor);
+}
+
+function mouseClicked() {
+  physics.removeBehavior(gravity);
+  gravityStrength.y *= -1;
+  gravity = new GravityBehavior(gravityStrength);
+  physics.addBehavior(gravity);
+  console.log(gravityStrength);
+  // prevent default
+  return false;
 }
