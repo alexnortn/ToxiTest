@@ -15,6 +15,7 @@ var aLockVert = [],
     nSpringVert = [],
     nSpringArr = [],
     w,h,
+    mousePos,
     scaleFactor,
     center,
     glyphCenter,
@@ -38,6 +39,7 @@ function setup() {
   w = windowWidth;
   h = windowHeight;
   scaleFunc(windowWidth,windowHeight);
+  mousePos = createVector();
 
   // Centering functions
   center = createVector(w/2, h/2);
@@ -71,7 +73,8 @@ function draw() {
   physics.update();
 
   // Update the attractor position
-  touchIsDown ? nudgeAttractor.set(touchX ,touchY) : nudgeAttractor.set(mouseX,mouseY);
+  touchIsDown ? mousePos.set(touchX ,touchY) : mousePos.set(mouseX,mouseY);
+  nudgeAttractor.set(mousePos.x ,mousePos.y);
 
   background(255);
 
@@ -225,8 +228,6 @@ function loadArrays(vertices) {
 }
 
 function displayPhys() {
-    // Display and draw line between the 'a' vertices
-    var mousePos = createVector(mouseX, mouseY);
     for(var i in aVerts) {
         strokeWeight(0.5);
         var aVertPos = createVector(aLockVert[i].x, aLockVert[i].y);
