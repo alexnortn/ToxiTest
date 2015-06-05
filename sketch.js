@@ -79,6 +79,9 @@ function draw() {
   drawBasicA();
   // drawBasicN();
 
+  // Display the Physiscs Particles;
+  displayPhys();
+
   // Move the second one according to the mouse
   if (mouseIsPressed) {
 
@@ -102,10 +105,6 @@ function draw() {
     //     nSpringVert[i].y = mouseY;
     //     nSpringVert[i].unlock();
     // }
-
-    // Display the Physiscs Particles;
-    displayPhys();
-
   }
 }
 
@@ -227,17 +226,28 @@ function loadArrays(vertices) {
 
 function displayPhys() {
     // Display and draw line between the 'a' vertices
+    var mousePos = createVector(mouseX, mouseY);
     for(var i in aVerts) {
-        stroke(255,0,0);
         strokeWeight(0.5);
+        var aVertPos = createVector(aLockVert[i].x, aLockVert[i].y);
+        var trans = map(aVertPos.dist(mousePos), 0, center.x/2, 100, 0);
+        var strokeCol = color(255,0,0,trans);
+        fill(strokeCol);
+        stroke(strokeCol);
+        ellipse(aLockVert[i].x,aLockVert[i].y,1,1);
         line(aLockVert[i].x,aLockVert[i].y,aSpringVert[i].x,aSpringVert[i].y);
         aLockVert[i].display();
         aSpringVert[i].display();
     }
     // Display and draw line between the 'a counter' vertices
     for(var i in aCounterVerts) {
-        stroke(255,0,0);
         strokeWeight(0.5);
+        var aVertPos = createVector(aCounterLockVert[i].x, aCounterLockVert[i].y);
+        var trans = map(aVertPos.dist(mousePos), 0, center.x/2, 100, 0);
+        var strokeCol = color(255,0,0,trans);
+        stroke(strokeCol);
+        fill(strokeCol);
+        ellipse(aCounterLockVert[i].x,aCounterLockVert[i].y,1,1);
         line(aCounterLockVert[i].x,aCounterLockVert[i].y,aCounterSpringVert[i].x,aCounterSpringVert[i].y);
         aCounterLockVert[i].display();
         aCounterSpringVert[i].display();
@@ -253,7 +263,7 @@ function displayPhys() {
 }
 
 function physInit() {
-    var springStrength = 0.00025,
+    var springStrength = 0.00035,
         springLength   = 0.05;
 
       // Make our ToxiParticles for 'a'
@@ -344,7 +354,6 @@ function centerA(vertices) {
   var yCenter = ((yMax - yMin) / 2) - 75;
 
   aCenterOffset.set(xCenter, yCenter);
-  console.log(aCenterOffset);
   return aCenterOffset;
 
 }
@@ -366,14 +375,6 @@ function arrayMax(arr) {
 // Scaling function
 
 function scaleFunc(w,h) {
-  if ((w || h) >= 1200) {
-      scaleFactor = 1.25;
-  } else if ((w || h) >= 800) {
-      scaleFactor = 1;
-  } else if ((w || h) >= 600) {
-      scaleFactor = 0.75;
-  } else {
-      scaleFactor = 0.5;
-  }
+  scaleFactor = w / 1600;
   console.log(scaleFactor);
 }
