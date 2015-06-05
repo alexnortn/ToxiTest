@@ -17,6 +17,7 @@ var aLockVert = [],
     w,h,
     gravity,
     gravityStrength,
+    xOff,
     mousePos,
     scaleFactor,
     center,
@@ -42,6 +43,7 @@ function setup() {
   h = windowHeight;
   scaleFunc(windowWidth,windowHeight);
   mousePos = createVector();
+  xOff = 0;
 
   // Centering functions
   center = createVector(w/2, h/2);
@@ -61,7 +63,7 @@ function setup() {
   physics.addBehavior(gravity);
 
   // Set the world's bounding box
-  physics.setWorldBounds(new Rect(0,0,width,height));
+  physics.setWorldBounds(new Rect(0,0,width*1.25,height*1.25));
 
   // Initiate the physics array
   physInit();
@@ -393,6 +395,10 @@ function scaleFunc(w,h) {
 
 function mouseClicked() {
   physics.removeBehavior(gravity);
+  // Use perlin noise to achieve a similar* gravity vector
+  xOff += 0.5;
+  // Horizontal + Vertical leaping may be too much...
+  // gravityStrength.x = noise(xOff) * 0.75;
   gravityStrength.y *= -1;
   gravity = new GravityBehavior(gravityStrength);
   physics.addBehavior(gravity);
