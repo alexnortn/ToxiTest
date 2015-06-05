@@ -71,8 +71,7 @@ function draw() {
   physics.update();
 
   // Update the attractor position
-  nudgeAttractor.set(mouseX,mouseY);
-  nudgeAttractor.display();
+  touchIsDown ? nudgeAttractor.set(touchX ,touchY) : nudgeAttractor.set(mouseX,mouseY);
 
   background(255);
 
@@ -367,11 +366,11 @@ function arrayMax(arr) {
 // Scaling function
 
 function scaleFunc(w,h) {
-  if (h >= 1200) {
+  if ((w || h) >= 1200) {
       scaleFactor = 1.25;
-  } else if (h >= 800) {
+  } else if ((w || h) >= 800) {
       scaleFactor = 1;
-  } else if (h >= 600) {
+  } else if ((w || h) >= 600) {
       scaleFactor = 0.75;
   } else {
       scaleFactor = 0.5;
