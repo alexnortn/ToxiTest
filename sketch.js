@@ -42,6 +42,7 @@ function setup() {
   canvas = createCanvas(window.innerWidth, window.innerHeight);
   w = windowWidth;
   h = windowHeight;
+  scaleFunc(windowWidth,windowHeight);
 
   mousePos = createVector();
   xOff = 0;
@@ -56,7 +57,6 @@ function setup() {
   aCenterOffset = createVector();
   centerGlyph(vertices);
   findCenter();
-  scaleFunc(windowWidth,windowHeight);
 
   // Load the arrays
   loadArrays(vertices);
@@ -97,14 +97,39 @@ function draw() {
   // Display the Physiscs Particles;
   displayPhys();
 
+  // Move the second one according to the mouse
+  if (mouseIsPressed) {
+
+    // for(var i in aVerts) {
+    //     aSpringVert[i].lock();
+    //     aSpringVert[i].x = mouseX;
+    //     aSpringVert[i].y = mouseY;
+    //     aSpringVert[i].unlock();
+    // }
+
+    // for(var i in aCounterVerts) {
+    //     aCounterSpringVert[i].lock();
+    //     aCounterSpringVert[i].x = mouseX;
+    //     aCounterSpringVert[i].y = mouseY;
+    //     aCounterSpringVert[i].unlock();
+    // }
+
+    // for(var i in nVerts) {
+    //     nSpringVert[i].lock();
+    //     nSpringVert[i].x = mouseX;
+    //     nSpringVert[i].y = mouseY;
+    //     nSpringVert[i].unlock();
+    // }
+  }
 }
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
+  scaleFunc(windowWidth,windowHeight);
   // Empty the Physics Sim
   physEmpty();
   findCenter();
-  scaleFunc(windowWidth,windowHeight);
+  centerGlyph(vertices);
   // Reload the Arrays
   loadArrays(vertices);
   // Initiate the physics array
@@ -334,7 +359,7 @@ function findCenter() {
   w = windowWidth;
   h = windowHeight;
   center.set(w/2, h/2);
-  var glyphCenterX = center.x + aCenterOffset.x; 
+  var glyphCenterX = center.x - aCenterOffset.x; 
   var glyphCenterY = center.y + aCenterOffset.y; 
   glyphCenter.set(glyphCenterX, glyphCenterY);
 }
