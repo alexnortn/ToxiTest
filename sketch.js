@@ -20,6 +20,7 @@ var aLockVert = [],
     xOff,
     mousePos,
     scaleFactor,
+    nScaleFactor,
     center,
     glyphCenter,
     nOffset,
@@ -44,6 +45,8 @@ function setup() {
   scaleFunc(windowWidth,windowHeight);
   mousePos = createVector();
   xOff = 0;
+  nScaleFactor = 0.3;
+  nOffset = createVector(250, -500);
 
   // Centering functions
   center = createVector(w/2, h/2);
@@ -86,7 +89,7 @@ function draw() {
 
   // Draw the bezier Shapes 
   drawBasicA();
-  // drawBasicN();
+  drawBasicN();
 
   // Display the Physiscs Particles;
   displayPhys();
@@ -208,6 +211,7 @@ function loadArrays(vertices) {
   // Always set the arrays to zero, in order to center properly
   aVerts.length = 0;
   aCounterVerts.length = 0;
+  nVerts.length = 0;
   console.log("Arrays at Zero");
   for(var i in vertices.a_vertex) {
   aVerts.push(createVector(vertices.a_vertex[i].x, vertices.a_vertex[i].y));
@@ -225,14 +229,18 @@ function loadArrays(vertices) {
     aCounterVerts[j].y += (glyphCenter.y);
   // console.log(aCounterVerts[j].x + " , " + aCounterVerts[j].y);
   }
-  // for(var k in vertices.n_vertex) {
-  // nVerts.push(createVector(vertices.n_vertex[k].x, vertices.n_vertex[k].y));
-  //   nVerts[k].x *= scaleFactor;
-  //   // nVerts[k].x += (glyphCenter.x);
-  //   nVerts[k].y *= scaleFactor;
-  //   // nVerts[k].y += (glyphCenter.y);
-  // // console.log(aCounterVerts[j].x + " , " + aCounterVerts[j].y);
-  // }
+  for(var k in vertices.n_vertex) {
+  nVerts.push(createVector(vertices.n_vertex[k].x, vertices.n_vertex[k].y));
+    nVerts[k].x *= nScaleFactor;
+    nVerts[k].x += nOffset.x;
+    nVerts[k].x *= scaleFactor;
+    nVerts[k].x += glyphCenter.x;
+    nVerts[k].y *= nScaleFactor;
+    nVerts[k].y += nOffset.y
+    nVerts[k].y *= scaleFactor;
+    nVerts[k].y += glyphCenter.y;
+  // console.log(aCounterVerts[j].x + " , " + aCounterVerts[j].y);
+  }
 }
 
 function displayPhys() {
@@ -262,18 +270,18 @@ function displayPhys() {
         aCounterSpringVert[i].display();
     }
     // Display and draw line between the 'N' vertices
-    // for(var i in nVerts) {
-    //     strokeWeight(scaleFactor);
-    //     var aVertPos = createVector(nLockVert[i].x, nLockVert[i].y);
-    //     var trans = map(aVertPos.dist(mousePos), 0, center.x/2, 100, 0);
-    //     var strokeCol = color(255,0,0,trans);
-    //     stroke(strokeCol);
-    //     fill(strokeCol);
-    //     ellipse(nLockVert[i].x,nLockVert[i].y,scaleFactor,scaleFactor);
-    //     line(nLockVert[i].x,nLockVert[i].y,nSpringVert[i].x,nSpringVert[i].y);
-    //     nLockVert[i].display();
-    //     nSpringVert[i].display();
-    // }
+    for(var i in nVerts) {
+        strokeWeight(scaleFactor);
+        var aVertPos = createVector(nLockVert[i].x, nLockVert[i].y);
+        var trans = map(aVertPos.dist(mousePos), 0, center.x/2, 100, 0);
+        var strokeCol = color(255,0,0,trans);
+        stroke(strokeCol);
+        fill(strokeCol);
+        ellipse(nLockVert[i].x,nLockVert[i].y,scaleFactor,scaleFactor);
+        line(nLockVert[i].x,nLockVert[i].y,nSpringVert[i].x,nSpringVert[i].y);
+        nLockVert[i].display();
+        nSpringVert[i].display();
+    }
 }
 
 function physInit() {
@@ -304,15 +312,15 @@ function physInit() {
     }
 
     // Make our ToxiParticles for 'N'
-    // for(var i in nVerts) {
-    //     nLockVert.push(new Particle(new Vec2D(nVerts[i].x, nVerts[i].y)));
-    //         nLockVert[i].lock();
-    //     nSpringVert.push(new Particle(new Vec2D(nVerts[i].x, nVerts[i].y)));
-    //     nSpringArr.push(new VerletSpring2D(nLockVert[i], nSpringVert[i],springLength, springStrength));
-    //         physics.addParticle(nLockVert[i]);
-    //         physics.addParticle(nSpringVert[i]);
-    //         physics.addSpring(nSpringArr[i]);
-    // }
+    for(var i in nVerts) {
+        nLockVert.push(new Particle(new Vec2D(nVerts[i].x, nVerts[i].y)));
+            nLockVert[i].lock();
+        nSpringVert.push(new Particle(new Vec2D(nVerts[i].x, nVerts[i].y)));
+        nSpringArr.push(new VerletSpring2D(nLockVert[i], nSpringVert[i],springLength, springStrength));
+            physics.addParticle(nLockVert[i]);
+            physics.addParticle(nSpringVert[i]);
+            physics.addSpring(nSpringArr[i]);
+    }
 }
 
 function physEmpty() {
@@ -333,14 +341,14 @@ function physEmpty() {
     aCounterSpringVert.length = 0;
   }
 
-  // if (nSpringArr.length == nVerts.length) {
-  //   for(var i in nSpringArr) {
-  //     physics.removeSpringElements(nSpringArr[i]);
-  //   }
-  //   nSpringArr.length  = 0;
-  //   nLockVert.length   = 0;
-  //   nSpringVert.length = 0;
-  // }
+  if (nSpringArr.length == nVerts.length) {
+    for(var i in nSpringArr) {
+      physics.removeSpringElements(nSpringArr[i]);
+    }
+    nSpringArr.length  = 0;
+    nLockVert.length   = 0;
+    nSpringVert.length = 0;
+  }
 }
 
 function findCenter() {
