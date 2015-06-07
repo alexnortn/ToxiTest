@@ -96,31 +96,6 @@ function draw() {
 
   // Display the Physiscs Particles;
   displayPhys();
-
-  // Move the second one according to the mouse
-  if (mouseIsPressed) {
-
-    // for(var i in aVerts) {
-    //     aSpringVert[i].lock();
-    //     aSpringVert[i].x = mouseX;
-    //     aSpringVert[i].y = mouseY;
-    //     aSpringVert[i].unlock();
-    // }
-
-    // for(var i in aCounterVerts) {
-    //     aCounterSpringVert[i].lock();
-    //     aCounterSpringVert[i].x = mouseX;
-    //     aCounterSpringVert[i].y = mouseY;
-    //     aCounterSpringVert[i].unlock();
-    // }
-
-    // for(var i in nVerts) {
-    //     nSpringVert[i].lock();
-    //     nSpringVert[i].x = mouseX;
-    //     nSpringVert[i].y = mouseY;
-    //     nSpringVert[i].unlock();
-    // }
-  }
 }
 
 function windowResized() {
