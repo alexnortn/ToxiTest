@@ -42,9 +42,11 @@ function setup() {
   canvas = createCanvas(window.innerWidth, window.innerHeight);
   w = windowWidth;
   h = windowHeight;
-  scaleFunc(windowWidth,windowHeight);
+
   mousePos = createVector();
   xOff = 0;
+
+  // Address N Scaling
   nScaleFactor = 0.3;
   nOffset = createVector(250, -500);
 
@@ -52,8 +54,9 @@ function setup() {
   center = createVector(w/2, h/2);
   glyphCenter = createVector();
   aCenterOffset = createVector();
-  centerA(vertices);
+  centerGlyph(vertices);
   findCenter();
+  scaleFunc(windowWidth,windowHeight);
 
   // Load the arrays
   loadArrays(vertices);
@@ -94,38 +97,14 @@ function draw() {
   // Display the Physiscs Particles;
   displayPhys();
 
-  // Move the second one according to the mouse
-  if (mouseIsPressed) {
-
-    // for(var i in aVerts) {
-    //     aSpringVert[i].lock();
-    //     aSpringVert[i].x = mouseX;
-    //     aSpringVert[i].y = mouseY;
-    //     aSpringVert[i].unlock();
-    // }
-
-    // for(var i in aCounterVerts) {
-    //     aCounterSpringVert[i].lock();
-    //     aCounterSpringVert[i].x = mouseX;
-    //     aCounterSpringVert[i].y = mouseY;
-    //     aCounterSpringVert[i].unlock();
-    // }
-
-    // for(var i in nVerts) {
-    //     nSpringVert[i].lock();
-    //     nSpringVert[i].x = mouseX;
-    //     nSpringVert[i].y = mouseY;
-    //     nSpringVert[i].unlock();
-    // }
-  }
 }
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
-  scaleFunc(windowWidth,windowHeight);
   // Empty the Physics Sim
   physEmpty();
   findCenter();
+  scaleFunc(windowWidth,windowHeight);
   // Reload the Arrays
   loadArrays(vertices);
   // Initiate the physics array
@@ -355,25 +334,33 @@ function findCenter() {
   w = windowWidth;
   h = windowHeight;
   center.set(w/2, h/2);
-  var glyphCenterX = center.x - aCenterOffset.x; 
+  var glyphCenterX = center.x + aCenterOffset.x; 
   var glyphCenterY = center.y + aCenterOffset.y; 
   glyphCenter.set(glyphCenterX, glyphCenterY);
 }
 
-function centerA(vertices) {
+function centerGlyph(vertices) {
   var xArray = [];
   var yArray = [];
+  var xArrayN = [];
+  var yArrayN = [];
 
-  for (var i in vertices.a_vertex) xArray.push(vertices.a_vertex[i].x);
-  for (var i in vertices.a_vertex) yArray.push(vertices.a_vertex[i].y);
+  for (var i in vertices.a_vertex) xArray.push(vertices.a_vertex[i].x * scaleFactor);
+  for (var i in vertices.a_vertex) yArray.push(vertices.a_vertex[i].y * scaleFactor);
+  for (var i in vertices.n_vertex) xArrayN.push(vertices.n_vertex[i].x * scaleFactor * nScaleFactor);
+  for (var i in vertices.n_vertex) yArrayN.push(vertices.n_vertex[i].y * scaleFactor * nScaleFactor);
 
   var xMin = arrayMin(xArray);
   var yMin = arrayMin(yArray);
   var xMax = arrayMax(xArray);
   var yMax = arrayMax(yArray);
+  var xMinN = arrayMin(xArrayN);
+  var yMinN = arrayMin(yArrayN);
+  var xMaxN = arrayMax(xArrayN);
+  var yMaxN = arrayMax(yArrayN);
 
-  var xCenter = (xMax - xMin) / 2;
-  var yCenter = ((yMax - yMin) / 2) - 75;
+  var xCenter = ((xMaxN + xMax) - (xMinN +xMin)) / 2;
+  var yCenter = (((yMaxN+ yMax) - (yMinN + yMin)) / 2) - 75;
 
   aCenterOffset.set(xCenter, yCenter);
   return aCenterOffset;
