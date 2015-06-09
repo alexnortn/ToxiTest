@@ -39,10 +39,10 @@ function preload() {
 
 function setup() {
   noStroke();
-  canvas = createCanvas(window.innerWidth, window.innerHeight);
-  w = windowWidth;
+  canvas = createCanvas(window.innerWidth / 2, window.innerHeight);
+  w = windowWidth / 2;
   h = windowHeight;
-  scaleFunc(windowWidth,windowHeight);
+  scaleFunc(w,h);
 
   mousePos = createVector();
   xOff = 0;
@@ -89,6 +89,7 @@ function draw() {
   nudgeAttractor.set(mousePos.x ,mousePos.y);
 
   background(255);
+  // motionBlur();
 
   // Draw the bezier Shapes 
   drawBasicA();
@@ -99,7 +100,7 @@ function draw() {
 }
 
 function windowResized() {
-  resizeCanvas(windowWidth, windowHeight);
+  resizeCanvas(windowWidth / 2, windowHeight);
   scaleFunc(windowWidth,windowHeight);
   // Empty the Physics Sim
   physEmpty();
@@ -132,7 +133,7 @@ function drawBezier(vertices) {
 
 function drawBasicA(){
   noStroke();
-  fill(128);
+  fill(50);
   beginShape();
   vertex(aSpringVert[0].x, aSpringVert[0].y);
   vertex(aSpringVert[1].x, aSpringVert[1].y);
@@ -169,7 +170,7 @@ function drawBasicA(){
 
 function drawBasicN(){
   noStroke();
-  fill(128);
+  fill(50);
   beginShape();
     vertex(nSpringVert[0].x, nSpringVert[0].y);
     vertex(nSpringVert[1].x, nSpringVert[1].y);
@@ -331,7 +332,7 @@ function physEmpty() {
 }
 
 function findCenter() {
-  w = windowWidth;
+  w = windowWidth / 2;
   h = windowHeight;
   center.set(w/2, h/2);
   var glyphCenterX = center.x - aCenterOffset.x; 
@@ -384,7 +385,7 @@ function arrayMax(arr) {
 // Scaling function
 
 function scaleFunc(w,h) {
-  scaleFactor = w / 1600;
+  scaleFactor = w / (1920 / 2);
   console.log(scaleFactor);
 }
 
@@ -400,4 +401,11 @@ function mouseClicked() {
   console.log(gravityStrength);
   // prevent default
   return false;
+}
+
+function motionBlur() {
+  push();
+    fill(255, 100);
+    rect(0,0,width,height);
+  pop();
 }
