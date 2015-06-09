@@ -24,6 +24,7 @@ var aLockVert = [],
     center,
     glyphCenter,
     nOffset,
+    phi,
     aCenterOffset,
     aVerts = [],
     aCounterVerts = [];
@@ -39,8 +40,9 @@ function preload() {
 
 function setup() {
   noStroke();
-  canvas = createCanvas(window.innerWidth / 2, window.innerHeight);
-  w = windowWidth / 2;
+  phi = (1 + sqrt(5)) / 2;
+  canvas = createCanvas(window.innerWidth / phi, window.innerHeight);
+  w = windowWidth / phi;
   h = windowHeight;
   scaleFunc(w,h);
 
@@ -100,8 +102,9 @@ function draw() {
 }
 
 function windowResized() {
-  resizeCanvas(windowWidth / 2, windowHeight);
-  scaleFunc(windowWidth,windowHeight);
+  resizeCanvas(windowWidth / phi, windowHeight);
+  w = windowWidth / phi;
+  scaleFunc(w,h);
   // Empty the Physics Sim
   physEmpty();
   findCenter();
@@ -332,7 +335,7 @@ function physEmpty() {
 }
 
 function findCenter() {
-  w = windowWidth / 2;
+  w = windowWidth / phi;
   h = windowHeight;
   center.set(w/2, h/2);
   var glyphCenterX = center.x - aCenterOffset.x; 
@@ -385,10 +388,12 @@ function arrayMax(arr) {
 // Scaling function
 
 function scaleFunc(w,h) {
-  scaleFactor = w / (1920 / 2);
+  scaleFactor = w / (1920 / 2.25);
   console.log(scaleFactor);
 }
 
+// A little too much interaction, if you ask me! Might be useful later
+/*
 function mouseClicked() {
   physics.removeBehavior(gravity);
   // Use perlin noise to achieve a similar* gravity vector
@@ -402,6 +407,7 @@ function mouseClicked() {
   // prevent default
   return false;
 }
+*/
 
 function motionBlur() {
   push();
