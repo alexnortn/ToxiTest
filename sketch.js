@@ -52,6 +52,8 @@ function setup() {
   h = windowHeight;
   scaleFunc(w,h);
 
+  cursor(HAND);
+
   mousePos = createVector();
   xOff = 0;
   alphaOpa = 0;

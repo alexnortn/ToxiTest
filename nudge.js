@@ -25,6 +25,11 @@ function Nudge(position, radius, range, strength) {
   this.away = function() {
     attractForce.setStrength(0.1);
   }
+
+  this.press = function() {
+    var newOpStrength = attractForce.getStrength() * -25;
+    attractForce.setStrength(newOpStrength);
+  }
 }
 
 // Inherit from the parent class
