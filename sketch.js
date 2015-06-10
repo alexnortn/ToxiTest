@@ -530,7 +530,7 @@ function arrayMax(arr) {
 // Scaling function
 
 function scaleFunc(w,h) {
-  var dynamicScale = ((w < 700) || (h < 700)) ?  2 : 1.5;
+  var dynamicScale = ((w < 700) || (h < 700)) ?  2 : 1.25;
   scaleFactor = w / (1920 / dynamicScale);
   console.log(dynamicScale);
 }
