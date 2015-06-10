@@ -97,6 +97,8 @@ function draw() {
   drawBasicA();
   drawBasicN();
 
+  rayTest();
+
   // Display the Physiscs Particles;
   displayPhys();
 }
@@ -186,6 +188,35 @@ function drawBasicN(){
     vertex(nSpringVert[8].x, nSpringVert[8].y);
     vertex(nSpringVert[9].x, nSpringVert[9].y);
   endShape(CLOSE);
+}
+
+function rayTest() {
+  var springVector = createVector(aSpringVert[5].x, aSpringVert[5].y);
+  var mouseVector = createVector(mouseX, mouseY);
+  var lenOffset = springVector.dist(mouseVector);
+  var lenMag = 150;
+  var rayVector = createVector();
+      rayVector.x = mouseVector.x + (mouseVector.x - springVector.x) / lenOffset * lenMag;
+      rayVector.y = mouseVector.y + (mouseVector.y - springVector.y) / lenOffset * lenMag;
+
+      ellipse(rayVector.x, rayVector.y, 10, 10);
+      strokeWeight(1);
+      stroke(0);
+      line(springVector.x, springVector.y, rayVector.x, rayVector.y);
+      var interests = 12;
+      var theta = TAU / interests;
+      var radLen = 500;
+
+      for (var i = 0; i < interests; i++) {
+        var x = radLen * sin(theta * i);
+        var y = radLen * cos(theta * i);
+
+        push();
+          translate(center.x,center.y);
+          ellipse(x, y, 10, 10);
+        pop();
+      }
+
 }
 
 
