@@ -27,6 +27,7 @@ var aLockVert = [],
     phi,
     alphaOpa,
     alphaOpa1,
+    glyphOp,
     tempSelection,
     aCenterOffset,
     fontBold,
@@ -58,6 +59,7 @@ function setup() {
   xOff = 0;
   alphaOpa = 0;
   alphaOpa1 = 0;
+  glyphOp = 0;
 
   // Address N Scaling
   nScaleFactor = 0.3;
@@ -149,8 +151,10 @@ function drawBezier(vertices) {
 }
 
 function drawBasicA(){
+  var fadeSpeed = 5;
+  if (glyphOp < 255) glyphOp += fadeSpeed;
   noStroke();
-  fill(50);
+  fill(50,50,50,glyphOp);
   beginShape();
   vertex(aSpringVert[0].x, aSpringVert[0].y);
   vertex(aSpringVert[1].x, aSpringVert[1].y);
@@ -186,8 +190,10 @@ function drawBasicA(){
 }
 
 function drawBasicN(){
+  var fadeSpeed = 5;
+  if (glyphOp < 255) glyphOp += fadeSpeed;
   noStroke();
-  fill(50);
+  fill(50,50,50,glyphOp);
   beginShape();
     vertex(nSpringVert[0].x, nSpringVert[0].y);
     vertex(nSpringVert[1].x, nSpringVert[1].y);
