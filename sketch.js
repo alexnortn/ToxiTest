@@ -26,6 +26,8 @@ var aLockVert = [],
     nOffset,
     phi,
     alphaOpa,
+    alphaOpa1,
+    tempSelection,
     aCenterOffset,
     fontBold,
     interestsArr = [],
@@ -53,6 +55,7 @@ function setup() {
   mousePos = createVector();
   xOff = 0;
   alphaOpa = 0;
+  alphaOpa1 = 0;
 
   // Address N Scaling
   nScaleFactor = 0.3;
@@ -107,7 +110,7 @@ function draw() {
   clockViz(); 
 
   // Display the Physiscs Particles;
-  displayPhys();
+  // displayPhys();
 }
 
 function windowResized() {
@@ -211,42 +214,48 @@ function rayTest2() {
       line(springVector.x, springVector.y, rayVector.x, rayVector.y);
 }
 
-function rayTest(alphaOpa) {
-      var interests = 8;
-      var tempLoc = createVector();
-      var theta = TAU / interests;
-      var radLen = ( w < h ? w : h ) / 3;
-      // console.log(radLen);
+function clockDisp(alphaOpa) {
+  var interests = 8;
+  var tempLoc = createVector();
+  var theta = TAU / interests;
+  var radLen = ( w < h ? w : h ) / 3;
+  var fadeSpeed1 = 10;
+  // console.log(radLen);
 
-      fill(0,0,0, alphaOpa);
-      noStroke();
+  for (var i = 0; i < interests; i++) {
+    var selection;
+    var x = (radLen * sin(theta * i)) + center.x;
+    var y = (radLen * cos(theta * i)) + center.y;
 
-      for (var i = 0; i < interests; i++) {
-        var selection;
-        var x = (radLen * sin(theta * i)) + center.x;
-        var y = (radLen * cos(theta * i)) + center.y;
+    // Display the clock ellipses
+    fill(0,0,0, alphaOpa);
+    noStroke();
+    ellipse(x, y, 8, 8);
 
-        tempLoc.set(x,y);
+    // Calc distance to local point in clock array
+    tempLoc.set(x,y);
+    var dist1 = mousePos.dist(tempLoc);
+    if (dist1 < 75) {
+      // FadeIn content
+      if (alphaOpa1 < 255) alphaOpa1 += fadeSpeed1;
+      console.log("You are near point " + i);
+      tempSelection = i;
 
-        var dist1 = mousePos.dist(tempLoc);
-        if (dist1 < 75) {
-          // Display the proper interest type
-          interestDisp(i, x, y);
-
-          fill(0,0,0);
-          // Dashed line around point using Polar Coordinates
-          var circleRad = 12;
-          var pointAmount = 25;
-          var theta1 = TAU / pointAmount;
-          for (var j = 0; j < pointAmount; j++) {
-            var x1 = (circleRad * sin(theta1 * j)) + x;
-            var y1 = (circleRad * cos(theta1 * j)) + y;
-            ellipse(x1, y1,1,1);
-          }
-          console.log("You are near point " + i + " Theta is " + theta1 * i);
-        }
-          ellipse(x, y, 8, 8);
+    } else {
+      // FadeOut content
+      if (i == tempSelection) {
+        if (alphaOpa1 > 0) alphaOpa1 -= fadeSpeed1 * 3;
       }
+    }
+    if (i == tempSelection) {
+      // Display the proper interest type if hovered
+      if (alphaOpa1 > 0) {
+        interestDisp(i, x, y, alphaOpa1);
+        dashedCircle(x, y, alphaOpa1);
+        console.log(alphaOpa1);
+      }
+    }
+  }
 
 }
 
@@ -257,7 +266,22 @@ function clockViz() {
     } else {
       if (alphaOpa > 0) alphaOpa -= fadeSpeed;
     }
-  if (alphaOpa > 0) rayTest(alphaOpa);
+  if (alphaOpa > 0) clockDisp(alphaOpa);
+}
+
+function dashedCircle(x,y,opacity) {
+  // Dashed line around point using Polar Coordinates
+  var circleRad = 12;
+  var pointAmount = 25;
+  var theta1 = TAU / pointAmount;
+  for (var j = 0; j < pointAmount; j++) {
+    var x1 = (circleRad * sin(theta1 * j)) + x;
+    var y1 = (circleRad * cos(theta1 * j)) + y;
+    push();
+      fill(0,0,0,opacity);
+      ellipse(x1, y1,1,1);
+    pop();
+  }
 }
 
 
@@ -490,10 +514,10 @@ function motionBlur() {
 }
 
 // Display typography on hover
-function interestDisp(i, x, y) {
+function interestDisp(i, x, y, opacity) {
   // Typography attributes
   var spacing = 7.5;
-  fill(0);
+  fill(0,0,0,opacity);
   textSize(12);
   textFont(fontBold);
   
