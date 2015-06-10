@@ -25,9 +25,14 @@ var aLockVert = [],
     glyphCenter,
     nOffset,
     phi,
+    alphaOpa,
+    alphaOpa1,
+    tempSelection,
     aCenterOffset,
+    fontBold,
+    interestsArr = [],
     aVerts = [],
-    aCounterVerts = [];
+    aCounterVerts = [],
     nVerts = [];
 
 // This will be our JSON object for the phys sim
@@ -36,6 +41,7 @@ var nudgeAttractor;
 
 function preload() {
   vertices = loadJSON("data/verts.json");
+  fontBold = loadFont("data/BerlingskeSansBold.ttf");
 }
 
 function setup() {
@@ -48,6 +54,8 @@ function setup() {
 
   mousePos = createVector();
   xOff = 0;
+  alphaOpa = 0;
+  alphaOpa1 = 0;
 
   // Address N Scaling
   nScaleFactor = 0.3;
@@ -79,6 +87,8 @@ function setup() {
   // Make our Node Object
   nudgeAttractor = new Nudge(new Vec2D(width/2,height/2),24,width,0.1);
 
+  interestsArr.push('Urban Design','Physics','Computation','Artificial Intelligence','Neuroscience','Game Design','Graphic Design','Architecture');
+
 }
 
 function draw() {
@@ -97,8 +107,10 @@ function draw() {
   drawBasicA();
   drawBasicN();
 
+  clockViz(); 
+
   // Display the Physiscs Particles;
-  displayPhys();
+  // displayPhys();
 }
 
 function windowResized() {
@@ -188,6 +200,92 @@ function drawBasicN(){
   endShape(CLOSE);
 }
 
+function rayTest2() {
+  var springVector = createVector(aSpringVert[5].x, aSpringVert[5].y);
+  var lenOffset = springVector.dist(mouseVector);
+  var lenMag = 150;
+  var rayVector = createVector();
+      rayVector.x = mouseVector.x + (mouseVector.x - springVector.x) / lenOffset * lenMag;
+      rayVector.y = mouseVector.y + (mouseVector.y - springVector.y) / lenOffset * lenMag;
+
+      ellipse(rayVector.x, rayVector.y, 10, 10);
+      strokeWeight(1);
+      stroke(0);
+      line(springVector.x, springVector.y, rayVector.x, rayVector.y);
+}
+
+function clockDisp(alphaOpa) {
+  var interests = 8;
+  var tempLoc = createVector();
+  var theta = TAU / interests;
+  var radLen = ( w < h ? w : h ) / 3;
+  var fadeSpeed1 = 10;
+  // console.log(radLen);
+
+  for (var i = 0; i < interests; i++) {
+    var selection;
+    var x = (radLen * sin(theta * i)) + center.x;
+    var y = (radLen * cos(theta * i)) + center.y;
+
+    // Display the clock ellipses
+    fill(0,0,0, alphaOpa);
+    noStroke();
+    ellipse(x, y, 8, 8);
+
+    // Calc distance to local point in clock array
+    tempLoc.set(x,y);
+    var dist1 = mousePos.dist(tempLoc);
+    if (dist1 < 75) {
+      // FadeIn content
+      if (alphaOpa1 < 255) alphaOpa1 += fadeSpeed1;
+      console.log("You are near point " + i);
+      tempSelection = i;
+      nudgeAttractor.hover();
+
+    } else {
+      // FadeOut content
+      if (i == tempSelection) {
+        if (alphaOpa1 > 0) alphaOpa1 -= fadeSpeed1 * 3;
+        nudgeAttractor.away();
+      }
+    }
+    if (i == tempSelection) {
+      // Display the proper interest type if hovered
+      if (alphaOpa1 > 0) {
+        interestDisp(i, x, y, alphaOpa1);
+        dashedCircle(x, y, alphaOpa1);
+        displayPhys1(x, y, alphaOpa1);
+        console.log(alphaOpa1);
+      }
+    }
+  }
+
+}
+
+function clockViz() {
+  var fadeSpeed = 5;
+    if ((w > 700) && (h > 700)) {
+      if (alphaOpa < 255) alphaOpa += fadeSpeed;
+    } else {
+      if (alphaOpa > 0) alphaOpa -= fadeSpeed;
+    }
+  if (alphaOpa > 0) clockDisp(alphaOpa);
+}
+
+function dashedCircle(x,y,opacity) {
+  // Dashed line around point using Polar Coordinates
+  var circleRad = 12;
+  var pointAmount = 25;
+  var theta1 = TAU / pointAmount;
+  for (var j = 0; j < pointAmount; j++) {
+    var x1 = (circleRad * sin(theta1 * j)) + x;
+    var y1 = (circleRad * cos(theta1 * j)) + y;
+    push();
+      fill(0,0,0,opacity);
+      ellipse(x1, y1,1,1);
+    pop();
+  }
+}
 
 // Setup the dynamic arrays --> center them on the page
 function loadArrays(vertices) {
@@ -264,6 +362,42 @@ function displayPhys() {
         line(nLockVert[i].x,nLockVert[i].y,nSpringVert[i].x,nSpringVert[i].y);
         nLockVert[i].display();
         nSpringVert[i].display();
+    }
+}
+
+function displayPhys1(x, y, alphaOpa1) {
+    strokeWeight(scaleFactor);
+    var locConverge = createVector(x,y);
+    for(var i in aVerts) {
+        var aVertPos = createVector(aSpringVert[i].x, aSpringVert[i].y);
+        var trans = map(aVertPos.dist(locConverge), 0, center.x, 100, 0);
+        var strokeCol = color(255,0,0,trans);
+        fill(strokeCol);
+        stroke(strokeCol);
+        ellipse(aSpringVert[i].x,aSpringVert[i].y,scaleFactor,scaleFactor);
+        line(aSpringVert[i].x,aSpringVert[i].y,locConverge.x,locConverge.y);
+    }
+    // Display and draw line between the 'a counter' vertices
+    for(var i in aCounterVerts) {
+        strokeWeight(scaleFactor);
+        var aVertPos = createVector(aCounterSpringVert[i].x, aCounterSpringVert[i].y);
+        var trans = map(aVertPos.dist(locConverge), 0, center.x, 100, 0);
+        var strokeCol = color(255,0,0,trans);
+        stroke(strokeCol);
+        fill(strokeCol);
+        ellipse(aCounterSpringVert[i].x,aCounterSpringVert[i].y,scaleFactor,scaleFactor);
+        line(locConverge.x,locConverge.y,aCounterSpringVert[i].x,aCounterSpringVert[i].y);
+    }
+    // Display and draw line between the 'N' vertices
+    for(var i in nVerts) {
+        strokeWeight(scaleFactor);
+        var aVertPos = createVector(nSpringVert[i].x, nSpringVert[i].y);
+        var trans = map(aVertPos.dist(locConverge), 0, center.x, 100, 0);
+        var strokeCol = color(255,0,0,trans);
+        stroke(strokeCol);
+        fill(strokeCol);
+        ellipse(nSpringVert[i].x,nSpringVert[i].y,scaleFactor,scaleFactor);
+        line(locConverge.x,locConverge.y,nSpringVert[i].x,nSpringVert[i].y);
     }
 }
 
@@ -388,8 +522,9 @@ function arrayMax(arr) {
 // Scaling function
 
 function scaleFunc(w,h) {
-  scaleFactor = w / (1920 / 2.25);
-  console.log(scaleFactor);
+  var dynamicScale = ((w < 700) || (h < 700)) ?  2 : 1.5;
+  scaleFactor = w / (1920 / dynamicScale);
+  console.log(dynamicScale);
 }
 
 // A little too much interaction, if you ask me! Might be useful later
@@ -414,4 +549,38 @@ function motionBlur() {
     fill(255, 100);
     rect(0,0,width,height);
   pop();
+}
+
+// Display typography on hover
+function interestDisp(i, x, y, opacity) {
+  // Typography attributes
+  var spacing = 7.5;
+  fill(0,0,0,opacity);
+  textSize(12);
+  textFont(fontBold);
+  
+  i < 5 ? textAlign(LEFT) : textAlign(RIGHT);
+  // X offset from point
+  i < 5 ? (x += 25) : (x -= 25);
+
+  /*
+  push();
+  // Split InterstArr[i] into array of char tokens to be properly spaced
+  var tokens = interestsArr[i].split("");
+
+  // Display the array
+    if (i > 4) {
+      var totalOffset = tokens.length * spacing;
+      translate(-totalOffset,0);
+    }
+
+    for(var j in tokens) {
+        x+= spacing;
+        text(tokens[j], x, y + 3);
+    }
+  pop();
+  */
+
+  text(interestsArr[i], x, y + 3);
+
 }
