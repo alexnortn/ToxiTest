@@ -240,11 +240,13 @@ function clockDisp(alphaOpa) {
       if (alphaOpa1 < 255) alphaOpa1 += fadeSpeed1;
       console.log("You are near point " + i);
       tempSelection = i;
+      nudgeAttractor.hover();
 
     } else {
       // FadeOut content
       if (i == tempSelection) {
         if (alphaOpa1 > 0) alphaOpa1 -= fadeSpeed1 * 3;
+        nudgeAttractor.away();
       }
     }
     if (i == tempSelection) {
@@ -252,6 +254,7 @@ function clockDisp(alphaOpa) {
       if (alphaOpa1 > 0) {
         interestDisp(i, x, y, alphaOpa1);
         dashedCircle(x, y, alphaOpa1);
+        displayPhys1(x, y, alphaOpa1);
         console.log(alphaOpa1);
       }
     }
@@ -283,7 +286,6 @@ function dashedCircle(x,y,opacity) {
     pop();
   }
 }
-
 
 // Setup the dynamic arrays --> center them on the page
 function loadArrays(vertices) {
@@ -360,6 +362,42 @@ function displayPhys() {
         line(nLockVert[i].x,nLockVert[i].y,nSpringVert[i].x,nSpringVert[i].y);
         nLockVert[i].display();
         nSpringVert[i].display();
+    }
+}
+
+function displayPhys1(x, y, alphaOpa1) {
+    strokeWeight(scaleFactor);
+    var locConverge = createVector(x,y);
+    for(var i in aVerts) {
+        var aVertPos = createVector(aSpringVert[i].x, aSpringVert[i].y);
+        var trans = map(aVertPos.dist(locConverge), 0, center.x, 100, 0);
+        var strokeCol = color(255,0,0,trans);
+        fill(strokeCol);
+        stroke(strokeCol);
+        ellipse(aSpringVert[i].x,aSpringVert[i].y,scaleFactor,scaleFactor);
+        line(aSpringVert[i].x,aSpringVert[i].y,locConverge.x,locConverge.y);
+    }
+    // Display and draw line between the 'a counter' vertices
+    for(var i in aCounterVerts) {
+        strokeWeight(scaleFactor);
+        var aVertPos = createVector(aCounterSpringVert[i].x, aCounterSpringVert[i].y);
+        var trans = map(aVertPos.dist(locConverge), 0, center.x, 100, 0);
+        var strokeCol = color(255,0,0,trans);
+        stroke(strokeCol);
+        fill(strokeCol);
+        ellipse(aCounterSpringVert[i].x,aCounterSpringVert[i].y,scaleFactor,scaleFactor);
+        line(locConverge.x,locConverge.y,aCounterSpringVert[i].x,aCounterSpringVert[i].y);
+    }
+    // Display and draw line between the 'N' vertices
+    for(var i in nVerts) {
+        strokeWeight(scaleFactor);
+        var aVertPos = createVector(nSpringVert[i].x, nSpringVert[i].y);
+        var trans = map(aVertPos.dist(locConverge), 0, center.x, 100, 0);
+        var strokeCol = color(255,0,0,trans);
+        stroke(strokeCol);
+        fill(strokeCol);
+        ellipse(nSpringVert[i].x,nSpringVert[i].y,scaleFactor,scaleFactor);
+        line(locConverge.x,locConverge.y,nSpringVert[i].x,nSpringVert[i].y);
     }
 }
 
