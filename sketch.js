@@ -39,7 +39,7 @@ var nudgeAttractor;
 
 function preload() {
   vertices = loadJSON("data/verts.json");
-  fontBold = loadFont("assets/BerlingskeSansBold.ttf");
+  fontBold = loadFont("data/BerlingskeSansBold.ttf");
 }
 
 function setup() {
@@ -229,7 +229,7 @@ function rayTest(alphaOpa) {
         tempLoc.set(x,y);
 
         var dist1 = mousePos.dist(tempLoc);
-        if (dist1 < 50) {
+        if (dist1 < 75) {
           // Display the proper interest type
           interestDisp(i, x, y);
 
@@ -489,10 +489,36 @@ function motionBlur() {
   pop();
 }
 
+// Display typography on hover
 function interestDisp(i, x, y) {
+  // Typography attributes
+  var spacing = 7.5;
   fill(0);
   textSize(12);
-  textAlign(LEFT);
   textFont(fontBold);
-  text(interestsArr[i], x, y);
+  
+  i < 5 ? textAlign(LEFT) : textAlign(RIGHT);
+  // X offset from point
+  i < 5 ? (x += 25) : (x -= 25);
+
+  /*
+  push();
+  // Split InterstArr[i] into array of char tokens to be properly spaced
+  var tokens = interestsArr[i].split("");
+
+  // Display the array
+    if (i > 4) {
+      var totalOffset = tokens.length * spacing;
+      translate(-totalOffset,0);
+    }
+
+    for(var j in tokens) {
+        x+= spacing;
+        text(tokens[j], x, y + 3);
+    }
+  pop();
+  */
+
+  text(interestsArr[i], x, y + 3);
+
 }
