@@ -97,7 +97,7 @@ function draw() {
   drawBasicA();
   drawBasicN();
 
-  rayTest();
+  // rayTest();
 
   // Display the Physiscs Particles;
   displayPhys();
@@ -210,9 +210,16 @@ function rayTest() {
       for (var i = 0; i < interests; i++) {
         var x = radLen * sin(theta * i);
         var y = radLen * cos(theta * i);
+        // var dist = sqrt(sq(mouseX - x) + sq(mouseY - y));
+        var opaE = map(dist, 0, width, 0, 1);
+        fill(0,0,0);
 
         push();
+          noStroke();
           translate(center.x,center.y);
+          var tempLoc = createVector(x,y);
+          var dist1 = tempLoc.dist(mouseVector);
+          if (i == 1) console.log(dist1 + "  " + x + "  " + y);
           ellipse(x, y, 10, 10);
         pop();
       }
