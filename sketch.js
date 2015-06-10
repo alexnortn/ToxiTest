@@ -25,9 +25,12 @@ var aLockVert = [],
     glyphCenter,
     nOffset,
     phi,
+    alphaOpa,
     aCenterOffset,
+    fontBold,
+    interestsArr = [],
     aVerts = [],
-    aCounterVerts = [];
+    aCounterVerts = [],
     nVerts = [];
 
 // This will be our JSON object for the phys sim
@@ -36,6 +39,7 @@ var nudgeAttractor;
 
 function preload() {
   vertices = loadJSON("data/verts.json");
+  fontBold = loadFont("assets/BerlingskeSansBold.ttf");
 }
 
 function setup() {
@@ -48,6 +52,7 @@ function setup() {
 
   mousePos = createVector();
   xOff = 0;
+  alphaOpa = 0;
 
   // Address N Scaling
   nScaleFactor = 0.3;
@@ -79,6 +84,8 @@ function setup() {
   // Make our Node Object
   nudgeAttractor = new Nudge(new Vec2D(width/2,height/2),24,width,0.1);
 
+  interestsArr.push('Urban Design','Physics','Computation','Artificial Intelligence','Neuroscience','Game Design','Graphic Design','Architecture');
+
 }
 
 function draw() {
@@ -97,7 +104,7 @@ function draw() {
   drawBasicA();
   drawBasicN();
 
-  // rayTest();
+  clockViz(); 
 
   // Display the Physiscs Particles;
   displayPhys();
@@ -190,9 +197,8 @@ function drawBasicN(){
   endShape(CLOSE);
 }
 
-function rayTest() {
+function rayTest2() {
   var springVector = createVector(aSpringVert[5].x, aSpringVert[5].y);
-  var mouseVector = createVector(mouseX, mouseY);
   var lenOffset = springVector.dist(mouseVector);
   var lenMag = 150;
   var rayVector = createVector();
@@ -203,27 +209,55 @@ function rayTest() {
       strokeWeight(1);
       stroke(0);
       line(springVector.x, springVector.y, rayVector.x, rayVector.y);
-      var interests = 12;
+}
+
+function rayTest(alphaOpa) {
+      var interests = 8;
+      var tempLoc = createVector();
       var theta = TAU / interests;
-      var radLen = 500;
+      var radLen = ( w < h ? w : h ) / 3;
+      // console.log(radLen);
+
+      fill(0,0,0, alphaOpa);
+      noStroke();
 
       for (var i = 0; i < interests; i++) {
-        var x = radLen * sin(theta * i);
-        var y = radLen * cos(theta * i);
-        // var dist = sqrt(sq(mouseX - x) + sq(mouseY - y));
-        var opaE = map(dist, 0, width, 0, 1);
-        fill(0,0,0);
+        var selection;
+        var x = (radLen * sin(theta * i)) + center.x;
+        var y = (radLen * cos(theta * i)) + center.y;
 
-        push();
-          noStroke();
-          translate(center.x,center.y);
-          var tempLoc = createVector(x,y);
-          var dist1 = tempLoc.dist(mouseVector);
-          if (i == 1) console.log(dist1 + "  " + x + "  " + y);
-          ellipse(x, y, 10, 10);
-        pop();
+        tempLoc.set(x,y);
+
+        var dist1 = mousePos.dist(tempLoc);
+        if (dist1 < 50) {
+          // Display the proper interest type
+          interestDisp(i, x, y);
+
+          fill(0,0,0);
+          // Dashed line around point using Polar Coordinates
+          var circleRad = 12;
+          var pointAmount = 25;
+          var theta1 = TAU / pointAmount;
+          for (var j = 0; j < pointAmount; j++) {
+            var x1 = (circleRad * sin(theta1 * j)) + x;
+            var y1 = (circleRad * cos(theta1 * j)) + y;
+            ellipse(x1, y1,1,1);
+          }
+          console.log("You are near point " + i + " Theta is " + theta1 * i);
+        }
+          ellipse(x, y, 8, 8);
       }
 
+}
+
+function clockViz() {
+  var fadeSpeed = 5;
+    if ((w > 700) && (h > 700)) {
+      if (alphaOpa < 255) alphaOpa += fadeSpeed;
+    } else {
+      if (alphaOpa > 0) alphaOpa -= fadeSpeed;
+    }
+  if (alphaOpa > 0) rayTest(alphaOpa);
 }
 
 
@@ -426,8 +460,9 @@ function arrayMax(arr) {
 // Scaling function
 
 function scaleFunc(w,h) {
-  scaleFactor = w / (1920 / 2.25);
-  console.log(scaleFactor);
+  var dynamicScale = ((w < 700) || (h < 700)) ?  2 : 1.5;
+  scaleFactor = w / (1920 / dynamicScale);
+  console.log(dynamicScale);
 }
 
 // A little too much interaction, if you ask me! Might be useful later
@@ -452,4 +487,12 @@ function motionBlur() {
     fill(255, 100);
     rect(0,0,width,height);
   pop();
+}
+
+function interestDisp(i, x, y) {
+  fill(0);
+  textSize(12);
+  textAlign(LEFT);
+  textFont(fontBold);
+  text(interestsArr[i], x, y);
 }
