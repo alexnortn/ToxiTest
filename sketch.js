@@ -31,7 +31,7 @@ var aLockVert = [],
     glyphOp,
     tempSelection,
     aCenterOffset,
-    fontBold,
+    liveText,
     interestsArr = [],
     aVerts = [],
     aCounterVerts = [],
@@ -43,7 +43,6 @@ var nudgeAttractor;
 
 function preload() {
   vertices = loadJSON("data/verts.json");
-  fontBold = loadFont("data/BerlingskeSansBold.ttf");
 }
 
 function setup() {
@@ -565,34 +564,19 @@ function motionBlur() {
 
 // Display typography on hover
 function interestDisp(i, x, y, opacity) {
-  // Typography attributes
-  var spacing = 7.5;
-  fill(0,0,0,opacity);
-  textSize(12);
-  textFont(fontBold);
-  
-  i < 5 ? textAlign(LEFT) : textAlign(RIGHT);
-  // X offset from point
-  i < 5 ? (x += 25) : (x -= 25);
 
-  /*
-  push();
-  // Split InterstArr[i] into array of char tokens to be properly spaced
-  var tokens = interestsArr[i].split("");
-
-  // Display the array
-    if (i > 4) {
-      var totalOffset = tokens.length * spacing;
-      translate(-totalOffset,0);
-    }
-
-    for(var j in tokens) {
-        x+= spacing;
-        text(tokens[j], x, y + 3);
-    }
-  pop();
-  */
-
-  text(interestsArr[i], x, y + 3);
+  // Create live dom text
+  var myElem = document.getElementById('interests');
+  if (myElem == null) {
+    liveText = createP(interestsArr[i]).id('interests');
+  } else {
+    i < 5 ? liveText.style("text-align", "left") : liveText.style("text-align", "right");
+    // X offset from point
+    i < 5 ? (x += 25) : (x -= 25);
+    var textOpacity = map(opacity, 0, 255, 0, 1);
+    liveText.style("opacity", textOpacity);
+    liveText.html(interestsArr[i]);
+    liveText.position(x,y+3);
+  }
 
 }

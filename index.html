@@ -13,18 +13,27 @@
 </head>
 <body>
 <style type="text/css">
+
+	@font-face {
+		font-family: BerlingskeSansBold;
+		src: url(/data/BerlingskeSansBold.ttf);
+	}
+
+	@font-face {
+		font-family: BerlingskeSansRegular;
+		src: url(/data/BerlingskeSansRegular.ttf);
+	}
+
 	body {
 	    overflow:hidden;
 	    margin: 0;
 	    padding: 0;
 	}
 	p {
-		font-family: sans-serif;
-		padding-left: 15px;
-		padding-top: 15px;
-		line-height: 1.5em;
-		font-size: 14px;
-		text-decoration: underline;
+		font-family: BerlingskeSansBold, sans-serif;
+		text-rendering: geometricPrecision;
+		letter-spacing: 3px;
+		font-size: 12px;
 
 	}
 
@@ -43,8 +52,8 @@
 	
 </style>
 <div>
-	<!-- <p>Alex Norton <br> ToxiTest // 2015</p>
-	<p class='directions'>Move around 'a' to warp the character <br> <i>Click</i> to view vertices + control points</p> -->
+	<!-- <p>Alex Norton <br> ToxiTest // 2015</p> -->
+	<!-- <p class='directions'>Move around 'a' to warp the character <br> <i>Click</i> to view vertices + control points</p> -->
 </div>
 
 </body>
