@@ -26,6 +26,7 @@ var aLockVert = [],
     nOffset,
     phi,
     alphaOpa,
+    timeOut,
     alphaOpa1,
     glyphOp,
     tempSelection,
@@ -60,6 +61,7 @@ function setup() {
   alphaOpa = 0;
   alphaOpa1 = 0;
   glyphOp = 0;
+  timeOut = 255;
 
   // Address N Scaling
   nScaleFactor = 0.3;
@@ -111,7 +113,9 @@ function draw() {
   drawBasicA();
   drawBasicN();
 
-  clockViz(); 
+  // Set timeout for loading the clockViz
+  if (timeOut > 0) timeOut--;
+  if (timeOut == 0) clockViz(); 
 
   // Display the Physiscs Particles;
   // displayPhys();
