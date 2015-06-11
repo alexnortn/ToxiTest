@@ -27,6 +27,7 @@ var aLockVert = [],
     phi,
     alphaOpa,
     timeOut,
+    timeOut1,
     alphaOpa1,
     buttonFade,
     buttonFade1,
@@ -73,6 +74,7 @@ function setup() {
   buttonFade1 = 0;
   lineOp = 0;
   timeOut = 255;
+  timeOut1 = 400;
 
   // Address N Scaling
   nScaleFactor = 0.3;
@@ -138,8 +140,12 @@ function draw() {
   // Set timeout for loading the clockViz
   if (timeOut > 0) timeOut--;
   if (timeOut == 0) {
-    fadeInButton();
     clockViz(); 
+  } 
+
+  if (timeOut1 > 0) timeOut1--;
+  if (timeOut1 == 0) {
+    fadeInButton();
   } 
 
   // Display the Physiscs Particles;
