@@ -260,7 +260,10 @@ function clockDisp(alphaOpa) {
     } else {
       // FadeOut content
       if (i == tempSelection) {
-        if (alphaOpa1 > 0) alphaOpa1 -= fadeSpeed1 * 3;
+        while (alphaOpa1 > 30) {
+          alphaOpa1 -= fadeSpeed1 * 3;  
+        } if ((alphaOpa1 < 30) && (alphaOpa1 > 0)) alphaOpa1 -= fadeSpeed1 / 10;  
+
         nudgeAttractor.away();
       }
     }
