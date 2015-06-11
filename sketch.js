@@ -28,10 +28,15 @@ var aLockVert = [],
     alphaOpa,
     timeOut,
     alphaOpa1,
+    buttonFade,
+    buttonFade1,
+    lineOp,
     glyphOp,
     tempSelection,
     aCenterOffset,
     liveText,
+    describeText,
+    describeText1,
     interestsArr = [],
     aVerts = [],
     aCounterVerts = [],
@@ -40,6 +45,10 @@ var aLockVert = [],
 // This will be our JSON object for the phys sim
 var vertices;
 var nudgeAttractor; 
+var dashButton;
+
+var descriptiveText  = "This interactive visualization of interest was developed using the P5js framework along with the Toxiclibs physics library."; 
+var descriptiveText1 = "Vertices used to construct the character are influenced by an underlying physics system and mapped to extend towards difference areas of my interest.";
 
 function preload() {
   vertices = loadJSON("data/verts.json");
@@ -60,6 +69,9 @@ function setup() {
   alphaOpa = 0;
   alphaOpa1 = 0;
   glyphOp = 0;
+  buttonFade = 0;
+  buttonFade1 = 0;
+  lineOp = 0;
   timeOut = 255;
 
   // Address N Scaling
@@ -90,11 +102,18 @@ function setup() {
   physInit();
   
   // Make our Node Object
-  nudgeAttractor = new Nudge(new Vec2D(width/2,height/2),24,width,0.1);
+  nudgeAttractor = new Nudge(new Vec2D(width/2,height/2),24,width/2,0.1);
+
+  // Make the button
+  dashButton = new MakeButton(0,0,50);
 
   // Create text node
   liveText = createP().id('interests');
   liveText.style("opacity", "0");
+  describeText = createP(descriptiveText).class('describe');
+  describeText.style("opacity", "0");
+  describeText1 = createP(descriptiveText1).class('describe');
+  describeText1.style("opacity", "0");
 
   interestsArr.push('Artificial Intelligence','Neuroscience','Game Design','Graphic Design','Architecture','Urban Design','Physics','Computation');
 
@@ -118,10 +137,17 @@ function draw() {
 
   // Set timeout for loading the clockViz
   if (timeOut > 0) timeOut--;
-  if (timeOut == 0) clockViz(); 
+  if (timeOut == 0) {
+    fadeInButton();
+    clockViz(); 
+  } 
 
   // Display the Physiscs Particles;
   // displayPhys();
+
+  // Button Interactivity
+  hoverButton();
+
 }
 
 function windowResized() {
@@ -273,7 +299,7 @@ function clockDisp(alphaOpa) {
         interestDisp(i, x, y, alphaOpa1);
         dashedCircle(x, y, alphaOpa1);
         displayPhys1(x, y, alphaOpa1);
-        console.log(alphaOpa1);
+        // console.log(alphaOpa1);
       }
     }
   }
@@ -542,7 +568,7 @@ function arrayMax(arr) {
 function scaleFunc(w,h) {
   var dynamicScale = ((w < 700) || (h < 700)) ?  2 : 1.25;
   scaleFactor = w / (1920 / dynamicScale);
-  console.log(dynamicScale);
+  // console.log(dynamicScale);
 }
 
 // A little too much interaction, if you ask me! Might be useful later
@@ -582,4 +608,53 @@ function interestDisp(i, x, y, opacity) {
   liveText.html(interestsArr[i]);
   liveText.position(x,y-17);
 
+}
+
+// Hover button interactivity
+function hoverButton() {
+  var fadeSpeed = 20;
+  var mousey = createVector(dashButton.loc().x, dashButton.loc().y);
+  var overButton = mousey.dist(mousePos);
+  var lineOffset = 60;
+  var lineLoc;
+  var opacity;
+  console.log(overButton);
+
+  lineLoc = map(buttonFade, 0, 255, 0, lineOffset);
+  opacity = norm(buttonFade, 0, 255);
+
+  // Position the descriptive text along with the button
+  describeText.position(mousey.x, mousey.y -105);
+  describeText.style("opacity", opacity);
+  describeText1.position(mousey.x, mousey.y -45);
+  describeText1.style("opacity", opacity);
+
+ push();
+    stroke(0,0,0,lineOp);
+    fill(0,0,0,lineOp);
+    strokeWeight(1);
+    if (timeOut == 0) {
+      line (mousey.x, mousey.y, mousey.x, mousey.y - lineLoc);
+      line (mousey.x, mousey.y, mousey.x, mousey.y + lineLoc);
+    }
+  pop();
+
+  if (overButton < 50) { 
+    lineOp = 255;
+    dashButton.hover(width,height);
+     if (buttonFade < 255) buttonFade += fadeSpeed;
+     if (alphaOpa > 0) alphaOpa -= fadeSpeed;
+  } else {
+    dashButton.display(width,height);
+    if (buttonFade > 60) {
+      buttonFade -= fadeSpeed * 4;
+    } else  if (buttonFade > 0) buttonFade -= fadeSpeed / 2;
+  }
+
+}
+
+function fadeInButton() {
+  var fadeSpeed = 5;
+  if (buttonFade1 < 255) buttonFade1 += fadeSpeed;
+  dashButton.opa(buttonFade1);
 }
