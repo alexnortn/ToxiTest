@@ -312,6 +312,8 @@ function clockViz() {
       if (alphaOpa < 255) alphaOpa += fadeSpeed;
     } else {
       if (alphaOpa > 0) alphaOpa -= fadeSpeed;
+      // Also control button fading as well
+      fadeOutButton();
     }
   if (alphaOpa > 0) clockDisp(alphaOpa);
 }
@@ -656,5 +658,11 @@ function hoverButton() {
 function fadeInButton() {
   var fadeSpeed = 5;
   if (buttonFade1 < 255) buttonFade1 += fadeSpeed;
+  dashButton.opa(buttonFade1);
+}
+
+function fadeOutButton() {
+  var fadeSpeed = 5;
+  if (buttonFade1 > 0) buttonFade1 -= fadeSpeed;
   dashButton.opa(buttonFade1);
 }
