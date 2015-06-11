@@ -92,7 +92,7 @@ function setup() {
   // Make our Node Object
   nudgeAttractor = new Nudge(new Vec2D(width/2,height/2),24,width,0.1);
 
-  interestsArr.push('Urban Design','Physics','Computation','Artificial Intelligence','Neuroscience','Game Design','Graphic Design','Architecture');
+  interestsArr.push('Artificial Intelligence','Neuroscience','Game Design','Graphic Design','Architecture','Urban Design','Physics','Computation');
 
 }
 
@@ -275,7 +275,7 @@ function clockDisp(alphaOpa) {
 
 function clockViz() {
   var fadeSpeed = 5;
-    if ((w > 700) && (h > 700)) {
+    if ((w > 750) && (h > 700)) {
       if (alphaOpa < 255) alphaOpa += fadeSpeed;
     } else {
       if (alphaOpa > 0) alphaOpa -= fadeSpeed;
@@ -572,11 +572,13 @@ function interestDisp(i, x, y, opacity) {
   } else {
     i < 5 ? liveText.style("text-align", "left") : liveText.style("text-align", "right");
     // X offset from point
-    i < 5 ? (x += 25) : (x -= 25);
+    i < 5 ? (x += 30) : (x -= 125);
+    if (i > 4) y -= 3;
+    if (i == 6) x += 45;
     var textOpacity = map(opacity, 0, 255, 0, 1);
     liveText.style("opacity", textOpacity);
     liveText.html(interestsArr[i]);
-    liveText.position(x,y+3);
+    liveText.position(x,y-17);
   }
 
 }
